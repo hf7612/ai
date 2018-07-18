@@ -1,0 +1,7 @@
+awk_shell=~/y/logcat_awk_command_list.sh
+for i in `cat tag`;do
+echo $i
+echo awk "'\$6 == \"$i\"'" l >> $awk_shell
+#awk '$6 == i' l;
+done
+sh $awk_shell
