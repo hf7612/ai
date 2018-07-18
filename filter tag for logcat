@@ -1,7 +1,8 @@
+tag=~/y/logcat_tag_result.txt
+awk '{ print $6 }' l|sort -u > $tag
 awk_shell=~/y/logcat_awk_command_list.sh
-for i in `cat tag`;do
+for i in `cat $tag`;do
 echo $i
-echo awk "'\$6 == \"$i\"'" l >> $awk_shell
-#awk '$6 == i' l;
+echo awk "'\$6 == \"$i\"'" l >> $awk_shell       #awk '$6 == i' l;
 done
 sh $awk_shell
