@@ -1,10 +1,1 @@
-cd /d/regmap/spmi0-00;  echo 0x844 > address;  echo 4 > count ; cat data; 
- echo 1 > count;echo 0x844 > address; echo 0x0 > data;   echo 0x845 > address; echo 0x0 > data;  
-echo 0x846 > address; echo 0x1 > data;  
-echo 0x847 > address; echo 0x0 > data;  
-echo 0x844 > address; 
-echo 1 > count;  echo 0x844 > address; echo 0x0 > data;   echo 0x845 > address; echo 0x0 > data;  
- echo 0x846 > address; echo 0x1 > data;  
-  echo 0x847 > address; echo 0x80 > data;  
-  echo 0x844 > address; echo 4 > count ; cat data;  
-
+cd /d/regmap/spmi0-00;  echo 0x844 > address; echo 1 > count;echo 0x844 > address; echo 0x0 > data;   echo 0x845 > address; echo 0x0 > data; echo 0x846 > address; echo 0x1 > data; echo 0x847 > address; echo 0x0 > data;    echo 0x844 > address;  echo 4 > count ; cat data; echo 0x847 > address; echo 1 > count;echo 0x80 > data; echo 0x844 > address; echo 4 > count ; cat data; 
