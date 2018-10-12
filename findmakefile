@@ -1,0 +1,5 @@
+How to find the makefile for frameworks/base/core/java/com/android/internal/widget?
+cd android_dir;. build/envsetup.sh;choosecombo 1 msm89xx eng;
+(cd frameworks/base/core/java/com/android/internal/widget;findmakefile)
+will print   frameworks/base/Android.mk.
+Is it so easy?
