@@ -1,0 +1,132 @@
+https://blog.csdn.net/kongxinsun/article/details/78665250
+setprop libc.debug.malloc.options backtrace
+setprop libc.debug.malloc 1
+setprop libc.debug.malloc.program /system/bin/app_process
+
+以mediaserver为例。在设置libc.debug.malloc后，要kill mediaserver.(killall -HUP mediaserver)，让mediaserver申请内存时使用debug libc。具体步骤如下：
+dump mediaserver’s memory use dumpsys command 
+dumpsys media.player -m > /data/before.txt
+Reproduce mediaserver memroy leak problem and dump again 
+dumpsys media.player -m > /data/after.txt
+diff the difference 
+diff before.txt after.txt > diff.txt
+Get the maps file of mediaserver 
+cat /proc/[pidofmediaserver]/maps > /data/maps
+Analysis and map back the backtrace to function symbols and line number
+
+7.0之前的版本需要做第4步，7.0之后，第4步libc默认会做的。7.0之前的版本，可以使用下面的help工具。 
+https://github.com/tinypie/android-memleak-help
+7.0之前的版本，dumpsys media.player -m 输出结果很多条，比如下面这条：
+
+size 1590888, dup 2, 0xb4a9a1bc, 0xb4a9a630, 0xb6eb7dc0, 0xb5077980, 0xb4eff7c4, 0xb4f0e684, 0xb4de63e0, 0xb4f1710c, 0xb4f9fbe4, 0xb4f989a8, 0xb4c2b668, 0xb4b495b8, 0xb4b4adc0, 0xb4b4880c, 0xb4b09a38, 0xb6eb71a0, 0xb6eb7338
+1
+含义如下：
+
+分配的大小，单位 bytes
+重复的个数
+backtrace address(up to 32)
+这些backtracd地址不结合maps文件看，是没有意义的。以上面为例，假设maps如下：
+
+b4a8d000-b4ace000 r-xp 00000000 b3:09 41059    /system/lib/libc_malloc_debug_leak.so
+b4ace000-b4ad0000 r--p 00040000 b3:09 41059    /system/lib/libc_malloc_debug_leak.so
+b4ad0000-b4ad3000 rw-p 00042000 b3:09 41059    /system/lib/libc_malloc_debug_leak.so
+1
+2
+3
+需要将backtrace地址减去map的基地址，算出偏移量。比如b4a9a1bc 在b4a8d000-b4ace000这个范围内，偏移量
+
+b4a9a1bc - b4a8d000 = d1bc
+1
+然后，用addr2line 找到代码行：
+
+addr2line -f -e symbols/system/lib/libc_malloc_debug_leak.so d1bc
+/mnt/source/android/bionic/libc/bionic/malloc_debug_leak.cpp:282
+1
+2
+Mediaserver 有dumpsys 接口，可以从libc里dump信息。如果是其它的native出现了内存泄漏，怎么办？这时就需要添加代码，仿照mediaserver里的dump接口。
+
+source file:
+frameworks/av/media/libmediaplayerservice/MediaPlayerService.cpp
+bionic/libc/bionic/malloc_debug_common.cpp
+Java process memory leak detect
+Android java 虚拟机（无论是dalvik还是art）会自己管理java heap，而JNI代码则和native 进程一样使用libc 管理heap。所以java heap 和native heap 出现泄露时，detect方法也不一样。
+
+Java进程 java heap 的内存泄漏就好查的多，因为有ddms这个工具可以使用。如果是Java 进程的native heap出现了内存泄漏，怎么办？
+
+Ddms也可以查看java进程的native heap，方法如下： 
+Platform setup(userdebug or eng)
+
+setprop libc.debug.malloc.options backtrace
+setprop libc.debug.malloc 1
+setprop libc.debug.malloc.program /system/bin/app_process
+1
+2
+3
+computer setup 
+1. 打开 ~/.android/ddms.cfg 
+2. 在这个文件的结尾添加 
+native=true 
+3. 保存文件 
+4. 从android sdk里单独打开ddms，确保不跑Eclispse 
+5. 打开Ddms，连接adb 
+6. Select process and track the allocation
+
+如果没有ddms，可以使用am dumpheap命令。am dumpheap [pid or process name]，输出的文件是hprof文件，需要用MAT进行分析。如果用-n选项dump native heap的话，map backtrace的方法，上面已经介绍过了。
+
+am dumpheap: dump the heap of a process.  The given <PROCESS> argument may
+  be either a process name or pid.  Options are:
+    -n: dump native heap instead of managed heap
+    --user <USER_ID> | current: When supplying a process name,
+        specify user of process to dump; uses current user if not specified.
+1
+2
+3
+4
+5
+Kmemleak
+见内核文档 Documentation/kmemleak.txt
+
+usage
+打开以下kconfig
+
+CONFIG_DEBUG_KMEMLEAK=y
+CONFIG_DEBUG_KMEMLEAK_EARLY_LOG_SIZE=10000
+1
+2
+1、如果没有挂载debugfs 
+mount -t debugfs nodev /sys/kernel/debug/ 
+2、开启内核检测线程 
+echo scan > /sys/kernel/debug/kmemleak 
+3、查看leak 信息 
+cat /sys/kernel/debug/kmemleak 
+4、清除内核检测报告，新的内存泄露报告将重新写入 
+echo clear > /sys/kernel/debug/kmemleak
+
+内存扫描参数可以进行修改，方法是向/sys/kernel/debug/kmemleak 节点写入参数。 参数如下：
+
+off 禁用kmemleak（不可逆）
+stack=on 启用任务堆栈扫描(default)
+stack=off 禁用任务堆栈扫描
+scan=on 启动自动记忆扫描线程(default)
+scan=off 停止自动记忆扫描线程
+scan=<secs> 设置n秒内自动记忆扫描，默认600s
+scan 开启内核扫描
+clear 清除内存泄露报告
+dump=<addr> 转存信息对象在<addr>
+applied
+kmemleak可以检测以下类型的memory leak
+
+kmalloc/kzalloc
+vmalloc
+kmem_cache_alloc
+Per_cpu
+[Page allocations and ioremap are not tracked]
+Basic Algorithm
+将所有的分配对象放到白名单里（白名单里剩余的对象稍后被认为是孤儿对象(orphan)
+扫描kernel data/bss 段，然后扫描所有的page和进程的stack，将匹配的地址存在PRIO搜索树。如果一个白名单对象的指针被发现，将该对象添加到灰名单中
+扫描与灰名单对象匹配的地址（一些白名单对象可以放到灰名单里），直到灰名单结束
+剩下的白名单对象被认为是孤儿，写入/sys/kernel/debug/kmemleak。
+Other memory leak detector
+Native 层的memory leak 检测还可以使用 
+Valgrind 
+Address sanitizer 
