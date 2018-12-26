@@ -1,4 +1,6 @@
 https://blog.csdn.net/kongxinsun/article/details/78665250
+https://blog.csdn.net/a332324956/article/details/73555884     （android native 代码内存泄露 定位方案）
+
 setprop libc.debug.malloc.options backtrace
 setprop libc.debug.malloc 1
 setprop libc.debug.malloc.program /system/bin/app_process
