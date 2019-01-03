@@ -1,0 +1,2 @@
+apt install libqtwebkit4 libqt4-opengl poppler-utils
+dpkg -i bcompare-4.2.8.23479_amd64.deb
