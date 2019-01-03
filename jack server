@@ -1,0 +1,1 @@
+~/.jack-server/config.properties:jack.server.service.port=9076   jack.server.admin.port=9077            ~/.jack-settings:SERVER_PORT_SERVICE=9076 SERVER_PORT_ADMIN=9077
