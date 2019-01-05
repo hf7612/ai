@@ -1,0 +1,1 @@
+OPENGROK_TOMCAT_BASE=~/t/apache-tomcat-9.0.13 ./bin/OpenGrok deploy; apt install exuberant-ctags; ~/t/opengrok-1.1-rc5/bin/OpenGrok index ~/m5_src; 
