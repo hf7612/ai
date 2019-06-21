@@ -1,0 +1,3 @@
+https://fishpepper.de/2016/09/16/installing-using-st-link-v2-to-flash-stm32-on-linux/
+
+apt-get install libusb-1.0-0-dev; git clone https://github.com/texane/stlink stlink.git; cd stlink; make; sudo cp build/Debug/st-* /usr/local/bin; sudo cp etc/udev/rules.d/49-stlinkv* /etc/udev/rules.d/; sudo udevadm control --reload; 
