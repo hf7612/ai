@@ -1,0 +1,13 @@
+#  <center> Make it better like opengrok. </center>
+
+### For optimized lxr level 1 code
+![image info](pic/optimized.lxr.code.exam.level.0.png)
+
+### For optimized lxr level 2 code
+![image info](pic/optimized.lxr.code.exam.level.2.png)
+
+### For optimized lxr level 3 code
+![image info](pic/optimized.lxr.code.exam.level.3.png)
+
+### For opengrok exam code
+![image info](pic/opengrok.exam.png)
