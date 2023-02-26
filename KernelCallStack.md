@@ -1,3 +1,8 @@
+  kernel什么情况下会调整优先级？ 
+  以 set_user_nice 为例 直接看代码和opengrok都挺麻烦,这个静态分析调用堆栈看起来就方便多了.
+  一个空格表示一层,后面带！表示没有调用者了.
+  从这个分析来看 binder   workq  loop设备   setpriority 会调整优先级，基本就了解哪些场景会触发调整优先级
+
          set_user_nice
         SYSCALL_DEFINE1_nice!
         binder_do_set_priority
@@ -62,7 +67,4 @@
  binder_ioctl!
 __alloc_workqueue_key!
 
-这个静态分析调用堆栈看起来就方便多了
-一个空格表示一层
-后面带！表示没有调用者了
-从这个分析来看 binder   workq  loop设备   setpriority 会调整优先级，基本就了解哪些场景会触发调整优先级
+
