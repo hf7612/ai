@@ -68,6 +68,6 @@
 __alloc_workqueue_key!
 
 ----------------------------------------------------
-![Alt text](relative%20KernelCallStack.png?raw=true "Title")
+![Alt text](KernelCallStack.png?raw=true "Title")
 
 
