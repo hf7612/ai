@@ -1,0 +1,20 @@
+bash中如何获取正在运行的命令上下文环境？
+以前有一种方法是修改这个命令的宿主程序，然后加上env获取相应的上下文环境，但这个方法比较繁琐，要修改宿主程序也是没有那么简单，
+因为宿主程序类型繁多，有exe的，有python，bash或其它脚本，修改方法也不统一。
+最近找到一个简单的方法来获取，这个是通过分析运行的命令的情况，
+1.ps pidX;
+2.从/proc/pidX/获取相关的信息（此处后面再补充具体过程）
+实站：
+如何在不启动android studio的情况下手动运行android studio中的模拟器
+set -x
+export LD_LIBRARY_PATH=/home/men/sdb3/Android/Sdk/emulator/lib64/qt/lib:/home/men/sdb3/Android/Sdk/emulator/lib64/libstdc++:/home/men/sdb3/Android/Sdk/emulator/lib64/gles_swiftshader:/home/men/sdb3/Android/Sdk/emulator/lib64 
+export LD_PRELOAD=/home/men/sdb3/Android/Sdk/emulator/lib64/qt/lib/libfreetype.so.6
+ANDROID_HOME=/home/men/sdk
+JOURNAL_STREAM=8:43959
+MANAGERPID=1158
+ANDROID_EMULATOR_WRAPPER_PID=35469 
+ANDROID_EMULATOR_LAUNCHER_DIR=/home/men/sdb3/Android/Sdk/emulator 
+ANDROID_NDK_HOME=/home/men/sdk/ndk 
+ANDROID_AVD_HOME=/home/men/.android/avd 
+export PATH=/home/men/bin3/git.nouse:/home/men/bin3:/home/men//home/men/.local/bin:/home/men/bin:/home/men/a/prebuilts/jdk/jdk11/linux-x86/bin:/home/men/t/node-v16.15.1-linux-x64/bin:/home/men/.cargo/bin:/home/men/bin3:/home/men//home/men/.local/bin:/home/men/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/men/t/010editor:/home/men/sdb2/tcl/tcl/ub/bin:/home/men/.local/share/JetBrains/Toolbox/scripts:/home/men/sdk/platform-tools/systrace:/home/men/t/010editor:/home/men/sdb2/tcl/tcl/ub/bin:/home/men/.local/share/JetBrains/Toolbox/scripts
+/home/men/sdb3/Android/Sdk/emulator/qemu/linux-x86_64/qemu-system-x86_64 -netdelay none -netspeed full -avd Pixel_XL_API_34 -grpc-use-token -idle-grpc-timeout 300 
