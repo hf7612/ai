@@ -1,0 +1,26 @@
+How to trace  which file is saved under ubuntu when recording file?
+Method:
+1.snoop |g -v " /sys\| /proc"|tee /m/l
+2.start record 
+3.stop snoop
+4.t aw -1 /m/l;
+get the result:
+/home/huzhuanmen/.drirc
+/home/huzhuanmen/.icons/Yaru/cursors/fleur
+/home/huzhuanmen/.icons/Yaru/cursors/left_ptr
+/home/huzhuanmen/.icons/Yaru/index.theme
+/home/huzhuanmen/.local/share/applications/userapp-c-2W9HS2.desktop
+/home/huzhuanmen/.local/share/applications/userapp-o-N0A5R2.desktop
+/home/huzhuanmen/.local/share/dbus-1/services
+/home/huzhuanmen/.local/share/glib-2.0/schemas/gschemas.compiled
+/home/huzhuanmen/.local/share/gstreamer-1.0/plugins
+/home/huzhuanmen/.xwechat/net/cdncomm/cdninfo_new.cache
+/home/huzhuanmen/.xwechat/radium/xfile/cache/7086
+/home/huzhuanmen/Documents/LCEDA-Pro/logs
+/home/huzhuanmen/Documents/LCEDA-Pro/logs/editor
+/home/huzhuanmen/Documents/LCEDA-Pro/logs/warn
+/home/huzhuanmen/Documents/LCEDA-Pro/logs/warn/.hidden
+/home/huzhuanmen/m/.org.chromium.Chromium.ff2HqW
+/home/huzhuanmen/m/.org.chromium.Chromium.L6SIgL
+21时40分53秒.webm
+then 21时40分53秒.webm is the file you want.
